@@ -39,6 +39,7 @@ func ReaderWriterReadWrite(r ReaderWriter) {
 }
 
 func (ec *ExtClient) Run() {
+	fmt.Printf("- Run() started for client %v\n", ec.Id)
 	ec.ReadBalance("run")
 	ec.WriteBalance("run")
 }
