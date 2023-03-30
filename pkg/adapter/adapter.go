@@ -1,13 +1,6 @@
 package adapter
 
 type CompatibilityAdapter interface {
+	Discover(endpoint string) error
 	Run()
-}
-
-type Adapter struct {
-	// Data, tests, etc
-}
-
-func (a Adapter) Run(rw CompatibilityAdapter) {
-	rw.Run()
 }

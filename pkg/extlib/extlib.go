@@ -1,9 +1,15 @@
 package extlib
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+
+	"github.com/ethereum/go-ethereum/rpc"
+)
 
 type ExtClient struct {
 	Id string
+	RPC string
 }
 
 func (ec *ExtClient) ReadBalance(location string) {
@@ -14,9 +20,10 @@ func (ec *ExtClient) WriteBalance(location string) {
 	fmt.Printf("ExtClient %s writing balance from %s\n", ec.Id, location)
 }
 
-func NewClient(id string) *ExtClient {
+func NewClient(id, endpoint string) *ExtClient {
 	return &ExtClient{
 		Id: id,
+		RPC: endpoint,
 	}
 }
 
@@ -38,8 +45,28 @@ func ReaderWriterReadWrite(r ReaderWriter) {
 	r.WriteBalance("ReaderWriter interface")
 }
 
+func (ec *ExtClient) Discover(endpoint string) error {
+	client, err := rpc.Dial(endpoint)
+	if err != nil {
+		return err
+	}
+
+	var chainId string
+	if err := client.Call(&chainId, "eth_chainId"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (ec *ExtClient) Run() {
-	fmt.Printf("- Run() started for client %v\n", ec.Id)
-	ec.ReadBalance("run")
-	ec.WriteBalance("run")
+	fmt.Printf("Created Ethereum client with id: %v\n", ec.Id)
+	client, err := rpc.Dial(ec.RPC)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	var chainId string
+	client.Call(&chainId, "eth_chainId")
+	fmt.Printf("Client %v got chainId %v\n", ec.Id, chainId)
 }

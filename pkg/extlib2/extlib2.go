@@ -42,6 +42,10 @@ func ReaderWriterReadWrite(r ReaderWriter) {
 	r.WriteBalance("ReaderWriter interface")
 }
 
+func (ec *ExtClient2) Discover(endpoint string) error {
+	return fmt.Errorf("not a real client")
+}
+
 func (ec *ExtClient2) Run() {
 	fmt.Printf("- Run() started for client %v\n", ec.Id)
 	ec.ReadBalance("run")
